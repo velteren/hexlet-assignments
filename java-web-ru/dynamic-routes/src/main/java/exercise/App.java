@@ -37,9 +37,9 @@ public final class App {
         });
         // END
 
-//        app.get("/companies", ctx -> {
-//            ctx.json(COMPANIES);
-//        });
+        app.get("/companies", ctx -> {
+            ctx.json(COMPANIES);
+        });
 
         app.get("/", ctx -> {
             ctx.result("open something like (you can change id): /companies/5");
