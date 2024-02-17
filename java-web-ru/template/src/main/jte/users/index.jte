@@ -13,8 +13,7 @@
 <body>
     <main>
         @for(var user: users.getUsers())
-            <a href="/users/${user.getId()}">Пользователь ${user.getId()}</a>
-            <h3>*********************************************</h3>
+            <h2><a href="/users/${user.getId()}">Пользователь ${user.getId()}</a></h2>
         @endfor
     </main>
 </body>
