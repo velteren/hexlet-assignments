@@ -1,13 +1,16 @@
 package exercise;
 
 import io.javalin.Javalin;
+
 import java.util.List;
 import java.util.Collections;
+
 import exercise.model.User;
 import exercise.dto.users.UsersPage;
 import exercise.repository.UserRepository;
-//import org.apache.commons.lang3.StringUtils;
-import exercise.util.Security;
+
+import static exercise.util.Security.encrypt;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 public final class App {
 
@@ -28,24 +31,19 @@ public final class App {
         });
 
         // BEGIN
-        app.get("/users/build", ctx -> {
-            ctx.render("users/build.jte");
+        app.post("/users", context -> {
+            var firstname = context.formParam("firstName");
+            var lastname = context.formParam("lastName");
+            var email = context.formParam("email").trim().toLowerCase();
+            var password = context.formParam("password");
+            var user = new User(capitalize(firstname), capitalize(lastname), email, encrypt(password));
+
+            UserRepository.save(user);
+            context.redirect("/users");
         });
 
-        app.post("/users", ctx -> {
-            var name = ctx.formParam("firstname").trim();
-            var lastname = ctx.formParam("lastname").trim();
-            var email = ctx.formParam("email").trim().toLowerCase();
-            var password = ctx.formParam("password");
-            var passwordConfirm = ctx.formParam("passwordConfirmation");
-            if (password != passwordConfirm) {
-                ctx.result("wrong password");
-                ctx.redirect("/users/build");
-            }
-            var encrpyptedPass = Security.encrypt(password);
-            var newUser = new User(name, lastname, email, encrpyptedPass);
-            UserRepository.save(newUser);
-            ctx.redirect("/users");
+        app.get("/users/build", context -> {
+            context.render("users/build.jte");
         });
         // END
 
